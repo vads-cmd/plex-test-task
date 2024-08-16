@@ -3,6 +3,7 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -11,7 +12,8 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class BaseTest {
 
-    public static void main(String[] args) {
+    @Test
+    public void BasicTest() {
         try (Playwright playwright = Playwright.create()) {
             Browser browser = playwright.webkit().launch(new BrowserType.LaunchOptions().setHeadless(false));
             Page page = browser.newPage();
