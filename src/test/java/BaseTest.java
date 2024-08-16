@@ -2,8 +2,7 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -12,33 +11,24 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class BaseTest {
 
-    @Test
-    public void BasicTest() {
-        try (Playwright playwright = Playwright.create()) {
-            Browser browser = playwright.webkit().launch(new BrowserType.LaunchOptions().setHeadless(false));
-            Page page = browser.newPage();
-            page.navigate("https://plexsupply.com/");
-            assertThat(page).hasTitle("Plexsupply.com | Wholesale and Retail Distribution of Quality Goods");
+    protected static String url = "https://plexsupply.com/";
+    protected static Playwright playwright;
+    protected static Browser browser;
+    protected static Page page;
 
-            MainPage mainPage = new MainPage(page);
-            mainPage.closeCookieBanner();
-            mainPage.openMainMenu();
-            ProductListPage plp = mainPage.selectRandomMenuItem();
-            ProductDetailsPage pdp = plp.selectRandomProduct();
+    @BeforeAll
+    protected static void SetUp() {
+        playwright = Playwright.create();
+        browser = playwright.webkit().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        page = browser.newPage();
+        page.navigate(url);
+        assertThat(page).hasTitle("Plexsupply.com | Wholesale and Retail Distribution of Quality Goods");
+    }
 
-            String productName = pdp.getProductName();
-            String productPrice = pdp.getProductPrice();
-            pdp.addProductToCart();
-            Checkout checkout = pdp.gotoCheckout();
-
-            String checkoutProductName = checkout.getProductName();
-            String checkoutPrice = checkout.getProductPrice();
-
-            Assertions.assertEquals(productName, checkoutProductName);
-            Assertions.assertEquals(productPrice, checkoutPrice);
-
-            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
-            page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(timeStamp.concat(".png"))));
-        }
+    @AfterAll
+    protected static void tearDown() {
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+        page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(timeStamp.concat(".png"))));
+        playwright.close();
     }
 }

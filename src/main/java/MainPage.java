@@ -16,9 +16,10 @@ public class MainPage {
         this.mainMenuButton = page.locator("//span[@class='d-none d-md-block']");
         this.mainMenuItems  =
                 page.locator("//li[contains(@class, 'level0') and contains(@class, 'mega_left')]");
+        closeCookieBanner();
     }
 
-    public void closeCookieBanner() {
+    private void closeCookieBanner() {
         cookieBanner.click();
     }
 
@@ -28,7 +29,7 @@ public class MainPage {
 
     public ProductListPage selectRandomMenuItem() {
         Random random = new Random();
-        mainMenuItems.nth(random.nextInt(mainMenuItems.count())).click();
+        mainMenuItems.nth(random.nextInt(mainMenuItems.count() - 1)).click();
         return new ProductListPage(this.page);
     }
 }

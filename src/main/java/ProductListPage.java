@@ -15,7 +15,7 @@ public class ProductListPage {
 
     public ProductDetailsPage selectRandomProduct() {
         Random random = new Random();
-        productOnPage.nth(random.nextInt(productOnPage.count())).click();
+        productOnPage.nth(random.nextInt(productOnPage.count() - 1)).click();
         return new ProductDetailsPage(this.page);
     }
 }
